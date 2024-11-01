@@ -41,6 +41,11 @@ public class ServicoController {
         return "redirect:/admin/servicos";
     }
 
+    @GetMapping("/{id}/excluir")
+    public String excluirServico(@PathVariable Long id) {
+        servicoRepository.deleteById(id);
+        return "redirect:/admin/servicos";
+    }
 
     @ModelAttribute("icones")
     public Icone[] getIcones() {
