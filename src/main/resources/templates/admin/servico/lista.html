@@ -34,7 +34,9 @@
                             <td th:text="${servico.qtdHoras}"></td>
                             <td th:text="${servico.posicao}"></td>
                             <td>
-                                <a class="btn btn-sm btn-warning"> Editar</a>
+                                <a class="btn btn-sm btn-warning"
+                                   th:href="@{/admin/servicos/{id}/editar (id=${servico.id})}"
+                                > Editar</a>
                                 <a class="btn btn-sm btn-danger"
                                    th:href="@{/admin/servicos/{id}/excluir (id=${servico.id})}"
                                    onclick="return confirm('Deseja realmente excluir esse registro?')"> Excluir</a>
