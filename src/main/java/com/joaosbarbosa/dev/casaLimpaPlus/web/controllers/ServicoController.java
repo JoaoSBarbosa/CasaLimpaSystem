@@ -18,6 +18,13 @@ public class ServicoController {
     ServicoService servicoService;
     @Autowired private ServicoRepository servicoRepository;
 
+    @GetMapping
+    public ModelAndView listar() {
+        var mv = new ModelAndView("admin/servico/lista");
+        mv.addObject("servicos", servicoRepository.findAll());
+        return mv;
+    }
+
     @GetMapping("/cadastrar")
     public ModelAndView cadastrar() {
         var mv = new ModelAndView("admin/servico/form");
@@ -25,11 +32,15 @@ public class ServicoController {
         return mv;
     }
 
+
+
     @PostMapping("/cadastrar")
     public String cadastrarServico(Servico servico) {
-        servicoService.cadastrarServico(servico);
-        return "redirect:/admin/servicos/cadastrar";
+//        servicoService.cadastrarServico(servico);
+        servicoRepository.save(servico);
+        return "redirect:/admin/servicos";
     }
+
 
     @ModelAttribute("icones")
     public Icone[] getIcones() {
