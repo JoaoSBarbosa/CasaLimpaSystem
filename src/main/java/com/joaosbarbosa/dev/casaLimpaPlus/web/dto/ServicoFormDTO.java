@@ -5,6 +5,7 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.Icone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -20,51 +21,65 @@ public class ServicoFormDTO {
     @NotNull
     @PositiveOrZero
     private Integer qtdHoras;
+
     @NotNull
     @PositiveOrZero
     private Integer horasQuarto;
     @NotNull
     @PositiveOrZero
     private Integer horasSala;
+
     @NotNull
     @PositiveOrZero
     private Integer horasCozinha;
+
     @NotNull
     @PositiveOrZero
     private Integer horasBanheiro;
+
     @NotNull
     @PositiveOrZero
     private Integer horasQuintal;
+
     @NotNull
     @PositiveOrZero
     private Integer horasOutros;
+
     @NotNull
     @Positive
     private Integer posicao;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorMinimo;
     @Max(100)
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.PERCENT, pattern = "##0,00%")
     private BigDecimal porcentagemComissao;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorQuarto;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorSala;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorCozinha;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorBanheiro;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorQuintal;
     @NotNull
     @PositiveOrZero
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     private BigDecimal valorOutros;
     @NotNull
     private Icone icone;
