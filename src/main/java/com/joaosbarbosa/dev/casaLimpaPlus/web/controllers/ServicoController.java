@@ -33,7 +33,11 @@ public class ServicoController {
 
 
     @PostMapping("/cadastrar")
-    public String cadastrarServico(@Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO, BindingResult bindResult, RedirectAttributes attributes) {
+    public String cadastrarServico(
+            @Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO,
+            BindingResult bindResult,
+            RedirectAttributes attributes
+    ) {
         if (bindResult.hasErrors()) return "admin/servico/form";
         webServicoService.cadastrarServico(formDTO);
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success","Serviço cadastrado com sucesso!"));
