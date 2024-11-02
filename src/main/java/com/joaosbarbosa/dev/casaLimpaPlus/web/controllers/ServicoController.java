@@ -7,9 +7,12 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.service.ServicoService;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.ServicoFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebServicoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,9 +22,12 @@ import javax.validation.Valid;
 @RequestMapping("/admin/servicos")
 public class ServicoController {
 
-    @Autowired private ServicoService servicoService;
-    @Autowired private ServicoRepository servicoRepository;
-    @Autowired private WebServicoMapper webServicoMapper;
+    @Autowired
+    private ServicoService servicoService;
+    @Autowired
+    private ServicoRepository servicoRepository;
+    @Autowired
+    private WebServicoMapper webServicoMapper;
 
 
     @GetMapping
@@ -40,7 +46,10 @@ public class ServicoController {
 
 
     @PostMapping("/cadastrar")
-    public String cadastrarServico(@Valid ServicoFormDTO formDTO) {
+    public String cadastrarServico(@Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO, BindingResult bindResult) {
+        if (bindResult.hasErrors()) {
+            return "admin/servico/form";
+        }
         var modelServico = webServicoMapper.convertDTOToModel(formDTO);
         servicoRepository.save(modelServico);
         return "redirect:/admin/servicos";
@@ -50,7 +59,7 @@ public class ServicoController {
     public ModelAndView editarServico(@PathVariable Long id) {
         var mv = new ModelAndView("admin/servico/form");
         var modelServico = servicoRepository.findById(id);
-        if(modelServico.isPresent()) {
+        if (modelServico.isPresent()) {
             var formDto = webServicoMapper.convertModelToDTO(modelServico.get());
             mv.addObject("formDTO", formDto);
         }
@@ -59,9 +68,11 @@ public class ServicoController {
     }
 
     @PostMapping("/{id}/editar")
-    public String editarServico( @PathVariable Long id, @Valid ServicoFormDTO updateService) {
-
-        var modelServico = webServicoMapper.convertDTOToModel(updateService);
+    public String editarServico(@PathVariable Long id, @Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO, BindingResult bindResult) {
+        if (bindResult.hasErrors()) {
+            return "admin/servico/form";
+        }
+        var modelServico = webServicoMapper.convertDTOToModel(formDTO);
         servicoRepository.save(modelServico);
         return "redirect:/admin/servicos";
     }
