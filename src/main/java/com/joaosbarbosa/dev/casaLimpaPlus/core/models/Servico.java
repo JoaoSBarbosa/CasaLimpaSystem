@@ -4,6 +4,7 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.Icone;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -59,6 +60,7 @@ public class Servico {
     @Column(nullable = false, length = 14)
     @Enumerated(EnumType.STRING)
     private Icone icone;
+
 
 
 }
