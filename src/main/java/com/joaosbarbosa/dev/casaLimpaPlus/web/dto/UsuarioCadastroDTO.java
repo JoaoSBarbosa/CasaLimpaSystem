@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,12 +15,14 @@ public class UsuarioCadastroDTO {
 
     private Long id;
     @NotNull
+    @NotEmpty
     @Size(min = 3, max = 50)
     private String nome;
     @Size(min = 0, max = 100)
     private String sobrenome;
     @Email
     @NotNull
+    @NotEmpty
     private String email;
     @NotNull
     @NotEmpty

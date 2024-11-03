@@ -34,13 +34,13 @@ public class UsuarioController {
 
     @PostMapping("/cadastrar")
     public String cadastrarUsuario(
-            @Valid @ModelAttribute("formUserDTO") UsuarioFormDTO formUserDTO,
+            @Valid @ModelAttribute("formUserDTO") UsuarioCadastroDTO formUserDTO,
             BindingResult result,
             RedirectAttributes attributes
     ) {
-        if(result.hasErrors()) return "cadastro-form";
+        if(result.hasErrors()) return "admin/usuario/cadastro-form";
 
-        webUsuarioService.cadastrarUsuario(formUserDTO);
+        webUsuarioService.cadastraUsuario(formUserDTO);
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
         return "redirect:/admin/usuarios";
     }
@@ -52,7 +52,7 @@ public class UsuarioController {
 
     @PostMapping("/{id}/editar")
     public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("formUserDTO") UsuarioFormDTO formUserDTO, BindingResult result, RedirectAttributes attributes) {
-        if(result.hasErrors()) return "cadastro-form";
+        if(result.hasErrors()) return "/admin/usuario/cadastro-form";
 
         webUsuarioService.editarUsuario(formUserDTO,id);
         String alert = String.format("Usuário de ID [%d] editado com sucesso!", id);

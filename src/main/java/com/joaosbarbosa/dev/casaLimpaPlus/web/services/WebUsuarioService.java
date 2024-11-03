@@ -1,8 +1,11 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.services;
 
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.UsuarioRepository;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebUsuarioMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,8 @@ public class WebUsuarioService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    WebUsuarioMapperImpl mapper;
 
 
     @Transactional(readOnly = true)
@@ -38,11 +43,19 @@ public class WebUsuarioService {
         return usuarioFormDTOS;
     }
 
+//    @Transactional
+//    public void cadastrarUsuario(UsuarioFormDTO formUserDTO) {
+//        Usuario usuario = new Usuario();
+//        convertDtoToModel(formUserDTO, usuario);
+//        usuarioRepository.save(usuario);
+//    }
+
     @Transactional
-    public void cadastrarUsuario(UsuarioFormDTO formUserDTO) {
-        Usuario usuario = new Usuario();
-        convertDtoToModel(formUserDTO, usuario);
-        usuarioRepository.save(usuario);
+    public Usuario cadastraUsuario(UsuarioCadastroDTO formUserDTO) {
+        var model = mapper.toModel(formUserDTO);
+
+        model.setTipoUsuario(TipoUsuario.ADMIN);
+        return usuarioRepository.save(model);
     }
 
     @Transactional
