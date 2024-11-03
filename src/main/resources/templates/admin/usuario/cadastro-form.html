@@ -66,7 +66,7 @@
                                 <div class="form-group">
                                     <label for="confirmaSenha">Confirmar Senha</label>
                                     <input type="password" id="confirmaSenha" class="form-control" th:field="*{confirmaSenha}"/>
-                                    <ul><li class="text-danger" th:each="erro : ${#fields.errors('senha')}" th:text="${erro}"></li></ul>
+                                    <ul><li class="text-danger" th:each="erro : ${#fields.errors('confirmaSenha')}" th:text="${erro}"></li></ul>
                                 </div>
                             </div>
 

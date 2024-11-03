@@ -1,4 +1,6 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
+
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
@@ -38,10 +40,17 @@ public class UsuarioController {
             BindingResult result,
             RedirectAttributes attributes
     ) {
-        if(result.hasErrors()) return "admin/usuario/cadastro-form";
+        if (result.hasErrors()) return "admin/usuario/cadastro-form";
 
-        webUsuarioService.cadastraUsuario(formUserDTO);
-        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
+        try {
+            webUsuarioService.cadastraUsuario(formUserDTO);
+            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
+        } catch (SenhasDiferemException e) {
+            System.out.println("ERRO: " + e.getFieldError());
+            result.addError(e.getFieldError());
+            return "admin/usuario/cadastro-form";
+
+        }
         return "redirect:/admin/usuarios";
     }
 
@@ -52,9 +61,9 @@ public class UsuarioController {
 
     @PostMapping("/{id}/editar")
     public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("edicaoForm") UsuarioEdicaoDTO edicaoForm, BindingResult result, RedirectAttributes attributes) {
-        if(result.hasErrors()) return "/admin/usuario/edicao-form";
+        if (result.hasErrors()) return "/admin/usuario/edicao-form";
 
-        webUsuarioService.editarUsuario(edicaoForm,id);
+        webUsuarioService.editarUsuario(edicaoForm, id);
         String alert = String.format("Usuário com ID [%d] editado com sucesso!", id);
 
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));

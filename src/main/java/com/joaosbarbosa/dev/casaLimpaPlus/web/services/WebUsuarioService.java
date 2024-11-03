@@ -1,5 +1,6 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.services;
 
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.UsuarioRepository;
@@ -10,6 +11,7 @@ import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebUsuarioMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +28,12 @@ public class WebUsuarioService {
 
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id));
+        return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id));
     }
+
     @Transactional(readOnly = true)
     public UsuarioEdicaoDTO buscarUsuarioEdicaoDTO(Long id) {
-       return mapper.toDTOForEdit(findById(id));
+        return mapper.toDTOForEdit(findById(id));
     }
 
     @Transactional(readOnly = true)
@@ -46,6 +49,17 @@ public class WebUsuarioService {
 
     @Transactional
     public Usuario cadastraUsuario(UsuarioCadastroDTO formUserDTO) {
+        if (formUserDTO.getSenha() != null && formUserDTO.getConfirmaSenha() != null) {
+            System.out.println("SENHA: " + formUserDTO.getSenha());
+            System.out.println("CONFIRMADA: " + formUserDTO.getConfirmaSenha());
+            if (!formUserDTO.getSenha().equals(formUserDTO.getConfirmaSenha())) {
+                var filedMessage = "As senhas são diferentes";
+                var fieldError = new FieldError(formUserDTO.getClass().getName(), "confirmaSenha", formUserDTO.getConfirmaSenha(), false, null, null, filedMessage);
+                throw new SenhasDiferemException(fieldError, filedMessage);
+            }
+        }
+
+
         var model = mapper.toModel(formUserDTO);
 
         model.setTipoUsuario(TipoUsuario.ADMIN);
@@ -63,7 +77,7 @@ public class WebUsuarioService {
         model.setSenha(usuario.getSenha());
 
 
-       return usuarioRepository.save(model);
+        return usuarioRepository.save(model);
 
     }
 
