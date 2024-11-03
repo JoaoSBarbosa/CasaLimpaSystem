@@ -24,13 +24,9 @@ public class WebUsuarioService {
 
 
     @Transactional(readOnly = true)
-    public UsuarioFormDTO findById(Long id) {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
-        if (usuario.isPresent()) {
-            return new UsuarioFormDTO(usuario.get());
-        } else {
-            throw new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id);
-        }
+    public UsuarioCadastroDTO findById(Long id) {
+        return new UsuarioCadastroDTO(usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id)));
+
     }
 
     @Transactional(readOnly = true)
@@ -65,6 +61,12 @@ public class WebUsuarioService {
 
         usuarioRepository.save(usuario);
 
+    }
+
+    @Transactional
+    public void excluirUsuario(Long id) {
+        var model = mapper.toModel(findById(id));
+        usuarioRepository.delete(model);
     }
 
     private void convertDtoToModel(UsuarioFormDTO formUserDTO, Usuario usuario) {

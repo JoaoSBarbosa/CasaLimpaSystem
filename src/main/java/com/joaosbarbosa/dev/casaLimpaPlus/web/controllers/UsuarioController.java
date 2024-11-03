@@ -61,6 +61,18 @@ public class UsuarioController {
         return "redirect:/admin/usuarios";
     }
 
+
+    @GetMapping("/{id}/excluir")
+    public String deletarUsuario(@PathVariable Long id, RedirectAttributes attributes) {
+        webUsuarioService.excluirUsuario(id);
+        String alert = String.format("Usuário com ID [%d] excluído com sucesso!", id);
+        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-warning", alert));
+
+        return "redirect:/admin/usuarios";
+    }
+
+
+
     @ModelAttribute("tiposUsuario")
     public TipoUsuario[] getTipoUsuario() {
         return TipoUsuario.values();
