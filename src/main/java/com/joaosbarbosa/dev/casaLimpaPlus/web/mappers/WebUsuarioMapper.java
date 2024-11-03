@@ -2,6 +2,7 @@ package com.joaosbarbosa.dev.casaLimpaPlus.web.mappers;
 
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -12,4 +13,8 @@ public interface WebUsuarioMapper {
 
     Usuario toModel(UsuarioCadastroDTO form);
     UsuarioCadastroDTO toDTO(Usuario usuario);
+
+
+    Usuario toModelForEdit(UsuarioEdicaoDTO form);
+    UsuarioEdicaoDTO toDTOForEdit(Usuario usuario);
 }

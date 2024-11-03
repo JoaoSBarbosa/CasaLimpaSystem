@@ -4,6 +4,7 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.UsuarioRepository;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebUsuarioMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class WebUsuarioService {
 
 
     @Transactional(readOnly = true)
-    public UsuarioCadastroDTO findById(Long id) {
-        return new UsuarioCadastroDTO(usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id)));
+    public Usuario findById(Long id) {
+        return (usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id)));
 
     }
 
@@ -55,17 +56,20 @@ public class WebUsuarioService {
     }
 
     @Transactional
-    public void editarUsuario(UsuarioFormDTO formUserDTO, Long id) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registros de usuario com o id informado: " + id));
-        convertDtoToModel(formUserDTO, usuario);
+    public Usuario editarUsuario(UsuarioEdicaoDTO formUserDTO, Long id) {
+        Usuario usuario = findById(id);
 
-        usuarioRepository.save(usuario);
+//        Usuario usuario = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registros de usuario com o id informado: " + id));
+//        convertDtoToModel(formUserDTO, usuario);
+
+       return usuarioRepository.save(usuario);
 
     }
 
+
     @Transactional
     public void excluirUsuario(Long id) {
-        var model = mapper.toModel(findById(id));
+        var model = findById(id);
         usuarioRepository.delete(model);
     }
 

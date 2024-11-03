@@ -2,6 +2,7 @@ package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.services.WebUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{id}/editar")
-    public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("formUserDTO") UsuarioFormDTO formUserDTO, BindingResult result, RedirectAttributes attributes) {
+    public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("formUserDTO") UsuarioEdicaoDTO formUserDTO, BindingResult result, RedirectAttributes attributes) {
         if(result.hasErrors()) return "/admin/usuario/cadastro-form";
 
         webUsuarioService.editarUsuario(formUserDTO,id);
@@ -67,10 +68,8 @@ public class UsuarioController {
         webUsuarioService.excluirUsuario(id);
         String alert = String.format("Usuário com ID [%d] excluído com sucesso!", id);
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-warning", alert));
-
         return "redirect:/admin/usuarios";
     }
-
 
 
     @ModelAttribute("tiposUsuario")
