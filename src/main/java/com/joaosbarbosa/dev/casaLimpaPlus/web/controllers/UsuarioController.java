@@ -1,8 +1,7 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
-
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.services.WebUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class UsuarioController {
 
     @GetMapping("/cadastrar")
     public ModelAndView cadastroUsuario() {
-        return new ModelAndView("/admin/usuario/form").addObject("formUserDTO", new UsuarioFormDTO());
+        return new ModelAndView("/admin/usuario/cadastro-form").addObject("formUserDTO", new UsuarioCadastroDTO());
     }
 
     @PostMapping("/cadastrar")
@@ -39,7 +38,7 @@ public class UsuarioController {
             BindingResult result,
             RedirectAttributes attributes
     ) {
-        if(result.hasErrors()) return "admin/usuario/form";
+        if(result.hasErrors()) return "cadastro-form";
 
         webUsuarioService.cadastrarUsuario(formUserDTO);
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
@@ -48,12 +47,12 @@ public class UsuarioController {
 
     @GetMapping("/{id}/editar")
     public ModelAndView editarUsuario(@PathVariable Long id) {
-        return new ModelAndView("/admin/usuario/form").addObject("formUserDTO", webUsuarioService.findById(id));
+        return new ModelAndView("cadastro-form").addObject("formUserDTO", webUsuarioService.findById(id));
     }
 
     @PostMapping("/{id}/editar")
     public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("formUserDTO") UsuarioFormDTO formUserDTO, BindingResult result, RedirectAttributes attributes) {
-        if(result.hasErrors()) return "admin/usuario/form";
+        if(result.hasErrors()) return "cadastro-form";
 
         webUsuarioService.editarUsuario(formUserDTO,id);
         String alert = String.format("Usuário de ID [%d] editado com sucesso!", id);

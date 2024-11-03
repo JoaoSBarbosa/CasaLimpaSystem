@@ -5,6 +5,7 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Servico;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.ServicoRepository;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.ServicoFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebServicoMapper;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebServicoMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class WebServicoService {
 
     @Autowired
     private WebServicoMapper webServicoMapper;
+    @Autowired private WebServicoMapperImpl mapper;
 
     @Transactional(readOnly = true)
     public ServicoFormDTO buscarServicoPorId(Long id) {
@@ -41,7 +43,7 @@ public class WebServicoService {
 
     @Transactional
     public void cadastrarServico(ServicoFormDTO formDTO) {
-        var modelServico = webServicoMapper.convertDTOToModel(formDTO);
+        var modelServico = mapper.toModel(formDTO);
         servicoRepository.save(modelServico);
     }
 
@@ -49,7 +51,7 @@ public class WebServicoService {
     public void editarServico(ServicoFormDTO formDTO, Long id) {
 
         var servicoAtual = buscarServicoPorId(id);
-        var modelServico = webServicoMapper.convertDTOToModel(formDTO);
+        var modelServico = mapper.toModel(formDTO);
         modelServico.setId(servicoAtual.getId());
 
         servicoRepository.save(modelServico);
@@ -59,7 +61,7 @@ public class WebServicoService {
     @Transactional
     public void excluirPorId(Long id) {
         var servicoAtual = buscarServicoPorId(id);
-        var modelServico = webServicoMapper.convertDTOToModel(servicoAtual);
+        var modelServico = mapper.toModel(servicoAtual);
         servicoRepository.delete(modelServico);
     }
 

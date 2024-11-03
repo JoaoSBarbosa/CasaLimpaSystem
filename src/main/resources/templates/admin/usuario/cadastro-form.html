@@ -40,8 +40,9 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
-                            <div class="col-md-12 col-sm-12">
+                            <div class="col">
                                 <div class="form-group">
                                     <label for="email">E-mail</label>
                                     <input type="email" id="email" class="form-control" th:field="*{email}"/>
@@ -51,6 +52,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
@@ -62,13 +64,21 @@
 
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label for="tipoUsuario">Tipo de Usuário</label>
-                                    <select id="tipoUsuario"  class="form-control" th:field="*{tipoUsuario}">
-                                        <option th:each="tipo : ${tiposUsuario}" th:text="${tipo.name}" th:value="${tipo}"></option>
-                                    </select>
-                                    <ul><li class="text-danger" th:each="erro : ${#fields.errors('tipoUsuario')}" th:text="${erro}"></li></ul>
+                                    <label for="confirmaSenha">Confirmar Senha</label>
+                                    <input type="password" id="confirmaSenha" class="form-control" th:field="*{confirmaSenha}"/>
+                                    <ul><li class="text-danger" th:each="erro : ${#fields.errors('senha')}" th:text="${erro}"></li></ul>
                                 </div>
                             </div>
+
+<!--                            <div class="col-md-6 col-sm-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <label for="tipoUsuario">Tipo de Usuário</label>-->
+<!--                                    <select id="tipoUsuario"  class="form-control" th:field="*{tipoUsuario}">-->
+<!--                                        <option th:each="tipo : ${tiposUsuario}" th:text="${tipo.name}" th:value="${tipo}"></option>-->
+<!--                                    </select>-->
+<!--                                    <ul><li class="text-danger" th:each="erro : ${#fields.errors('tipoUsuario')}" th:text="${erro}"></li></ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
 
 
