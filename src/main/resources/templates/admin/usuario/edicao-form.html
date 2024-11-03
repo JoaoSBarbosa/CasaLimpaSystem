@@ -1,0 +1,65 @@
+<!doctype html>
+<html  th:replace="~{adminlte3 :: layout (~{::title}, ~{::main}, _, _)}">
+<head>
+    <title>Edição de Usuários</title>
+</head>
+<body>
+<main>
+    <div class="row">
+        <div class="col">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <div class="card-title">Edição de Usuários</div>
+
+                    <div class="card-tools">
+                        <a th:href="@{/admin/usuarios}" class="btn btn-sm btn-primary">Lista de Usuários</a>
+                    </div>
+                </div>
+
+                <div class="card-body overflow-auto" style="max-height:75vh">
+
+                    <form method="POST" th:object="${edicaoForm}">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="nome">Nome</label>
+                                    <input type="text" id="nome" class="form-control" th:field="*{nome}"/>
+                                    <ul>
+                                        <li class="text-danger" th:each="erro : ${#fields.errors('nome')}" th:text="${erro}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="sobrenome">Sobrenome</label>
+                                    <input type="text"  id="sobrenome" class="form-control" th:field="*{sobrenome}">
+                                    <ul>
+                                        <li class="text-danger" th:each="erro : ${#fields.errors('sobrenome')}" th:text="${erro}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" id="email" class="form-control" th:field="*{email}"/>
+                                    <ul>
+                                        <li class="text-danger" th:each="erro : ${#fields.errors('email')}" th:text="${erro}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

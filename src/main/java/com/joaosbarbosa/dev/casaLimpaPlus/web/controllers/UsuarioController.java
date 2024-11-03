@@ -3,7 +3,6 @@ import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.services.WebUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,15 +47,15 @@ public class UsuarioController {
 
     @GetMapping("/{id}/editar")
     public ModelAndView editarUsuario(@PathVariable Long id) {
-        return new ModelAndView("cadastro-form").addObject("formUserDTO", webUsuarioService.findById(id));
+        return new ModelAndView("admin/usuario/edicao-form").addObject("edicaoForm", webUsuarioService.buscarUsuarioEdicaoDTO(id));
     }
 
     @PostMapping("/{id}/editar")
-    public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("formUserDTO") UsuarioEdicaoDTO formUserDTO, BindingResult result, RedirectAttributes attributes) {
-        if(result.hasErrors()) return "/admin/usuario/cadastro-form";
+    public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("edicaoForm") UsuarioEdicaoDTO edicaoForm, BindingResult result, RedirectAttributes attributes) {
+        if(result.hasErrors()) return "/admin/usuario/edicao-form";
 
-        webUsuarioService.editarUsuario(formUserDTO,id);
-        String alert = String.format("Usuário de ID [%d] editado com sucesso!", id);
+        webUsuarioService.editarUsuario(edicaoForm,id);
+        String alert = String.format("Usuário com ID [%d] editado com sucesso!", id);
 
         attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));
         return "redirect:/admin/usuarios";

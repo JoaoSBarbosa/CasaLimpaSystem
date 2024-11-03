@@ -26,8 +26,11 @@ public class WebUsuarioService {
 
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
-        return (usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id)));
-
+        return usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id));
+    }
+    @Transactional(readOnly = true)
+    public UsuarioEdicaoDTO buscarUsuarioEdicaoDTO(Long id) {
+       return mapper.toDTOForEdit(findById(id));
     }
 
     @Transactional(readOnly = true)
@@ -40,12 +43,6 @@ public class WebUsuarioService {
         return usuarioFormDTOS;
     }
 
-//    @Transactional
-//    public void cadastrarUsuario(UsuarioFormDTO formUserDTO) {
-//        Usuario usuario = new Usuario();
-//        convertDtoToModel(formUserDTO, usuario);
-//        usuarioRepository.save(usuario);
-//    }
 
     @Transactional
     public Usuario cadastraUsuario(UsuarioCadastroDTO formUserDTO) {
@@ -55,14 +52,18 @@ public class WebUsuarioService {
         return usuarioRepository.save(model);
     }
 
+
     @Transactional
-    public Usuario editarUsuario(UsuarioEdicaoDTO formUserDTO, Long id) {
-        Usuario usuario = findById(id);
+    public Usuario editarUsuario(UsuarioEdicaoDTO formDto, Long id) {
+        var usuario = findById(id);
 
-//        Usuario usuario = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Não foi localizado registros de usuario com o id informado: " + id));
-//        convertDtoToModel(formUserDTO, usuario);
+        var model = mapper.toModelForEdit(formDto);
+        model.setId(id);
+        model.setTipoUsuario(usuario.getTipoUsuario());
+        model.setSenha(usuario.getSenha());
 
-       return usuarioRepository.save(usuario);
+
+       return usuarioRepository.save(model);
 
     }
 
