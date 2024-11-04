@@ -1,5 +1,6 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
 
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.EmailConflitoException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
@@ -34,6 +35,28 @@ public class UsuarioController {
         return new ModelAndView("/admin/usuario/cadastro-form").addObject("formUserDTO", new UsuarioCadastroDTO());
     }
 
+//    @PostMapping("/cadastrar")
+//    public String cadastrarUsuario(
+//            @Valid @ModelAttribute("formUserDTO") UsuarioCadastroDTO formUserDTO,
+//            BindingResult result,
+//            RedirectAttributes attributes
+//    ) {
+//        if (result.hasErrors()) return "admin/usuario/cadastro-form";
+//
+//        try {
+//            webUsuarioService.cadastraUsuario(formUserDTO);
+//            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
+//        } catch (SenhasDiferemException e) {
+//            result.addError(e.getFieldError());
+//            return "admin/usuario/cadastro-form";
+//
+//        }catch (EmailConflitoException e){
+//            result.addError(e.getFieldError());
+//            return "admin/usuario/cadastro-form";
+//        }
+//        return "redirect:/admin/usuarios";
+//    }
+
     @PostMapping("/cadastrar")
     public String cadastrarUsuario(
             @Valid @ModelAttribute("formUserDTO") UsuarioCadastroDTO formUserDTO,
@@ -44,13 +67,12 @@ public class UsuarioController {
 
         try {
             webUsuarioService.cadastraUsuario(formUserDTO);
-            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
-        } catch (SenhasDiferemException e) {
-            System.out.println("ERRO: " + e.getFieldError());
+            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuário cadastrado com sucesso!"));
+        } catch (SenhasDiferemException | EmailConflitoException e) {
             result.addError(e.getFieldError());
             return "admin/usuario/cadastro-form";
-
         }
+
         return "redirect:/admin/usuarios";
     }
 
@@ -63,10 +85,14 @@ public class UsuarioController {
     public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("edicaoForm") UsuarioEdicaoDTO edicaoForm, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) return "/admin/usuario/edicao-form";
 
-        webUsuarioService.editarUsuario(edicaoForm, id);
-        String alert = String.format("Usuário com ID [%d] editado com sucesso!", id);
-
-        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));
+       try {
+           webUsuarioService.editarUsuario(edicaoForm, id);
+           String alert = String.format("Usuário com ID [%d] editado com sucesso!", id);
+           attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));
+       }catch (EmailConflitoException e) {
+           result.addError(e.getFieldError());
+           return "admin/usuario/edicao-form";
+       }
         return "redirect:/admin/usuarios";
     }
 

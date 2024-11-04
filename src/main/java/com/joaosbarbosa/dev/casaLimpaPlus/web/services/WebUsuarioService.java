@@ -1,9 +1,11 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.services;
 
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.EmailConflitoException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.UsuarioRepository;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.controllers.UsuarioController;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
@@ -49,18 +51,12 @@ public class WebUsuarioService {
 
     @Transactional
     public Usuario cadastraUsuario(UsuarioCadastroDTO formUserDTO) {
-        if (formUserDTO.getSenha() != null && formUserDTO.getConfirmaSenha() != null) {
-            System.out.println("SENHA: " + formUserDTO.getSenha());
-            System.out.println("CONFIRMADA: " + formUserDTO.getConfirmaSenha());
-            if (!formUserDTO.getSenha().equals(formUserDTO.getConfirmaSenha())) {
-                var filedMessage = "As senhas são diferentes";
-                var fieldError = new FieldError(formUserDTO.getClass().getName(), "confirmaSenha", formUserDTO.getConfirmaSenha(), false, null, null, filedMessage);
-                throw new SenhasDiferemException(fieldError, filedMessage);
-            }
-        }
+
+        validarSenhas(formUserDTO);
 
 
         var model = mapper.toModel(formUserDTO);
+        validarEmail(model, false );
 
         model.setTipoUsuario(TipoUsuario.ADMIN);
         return usuarioRepository.save(model);
@@ -72,15 +68,17 @@ public class WebUsuarioService {
         var usuario = findById(id);
 
         var model = mapper.toModelForEdit(formDto);
+
         model.setId(id);
         model.setTipoUsuario(usuario.getTipoUsuario());
         model.setSenha(usuario.getSenha());
+
+        validarEmail(model, true );
 
 
         return usuarioRepository.save(model);
 
     }
-
 
     @Transactional
     public void excluirUsuario(Long id) {
@@ -88,6 +86,51 @@ public class WebUsuarioService {
         usuarioRepository.delete(model);
     }
 
+
+
+
+
+    private void validarSenhas(UsuarioCadastroDTO formUserDTO) {
+        if (formUserDTO.getSenha() != null && formUserDTO.getConfirmaSenha() != null) {
+            if (!formUserDTO.getSenha().equals(formUserDTO.getConfirmaSenha())) {
+                String mensagemErro = "As senhas não coincidem.";
+                FieldError erroCampo = new FieldError(
+                        formUserDTO.getClass().getName(),
+                        "confirmaSenha",
+                        formUserDTO.getConfirmaSenha(),
+                        false,
+                        null,
+                        null,
+                        mensagemErro
+                );
+                throw new SenhasDiferemException(erroCampo, mensagemErro);
+            }
+        }
+    }
+    private void validarEmail(Usuario enity, boolean isEdit){
+        if ( enity.getEmail() != null){
+            usuarioRepository.findByEmail(enity.getEmail()).ifPresent((usuarioExistente)->{
+                // Caso seja uma edição, verificar se o e-mail pertence a outro usuário
+                if (!isEdit || !usuarioExistente.getId().equals(enity.getId())){
+                    gerarExcecaoEmailEmUso(usuarioExistente);
+                }
+            });
+        }
+    }
+    // Método auxiliar para lançar a exceção de e-mail já em uso
+    private void gerarExcecaoEmailEmUso(Usuario entity) {
+        String mensagemErro = "O e-mail já está em uso.";
+        FieldError erroCampo = new FieldError(
+                Usuario.class.getName(),
+                "email",
+                entity.getEmail(),
+                false,
+                null,
+                null,
+                mensagemErro
+        );
+        throw new EmailConflitoException(erroCampo, mensagemErro);
+    }
     private void convertDtoToModel(UsuarioFormDTO formUserDTO, Usuario usuario) {
         if (formUserDTO.getId() != null) usuario.setId(formUserDTO.getId());
         if (formUserDTO.getNome() != null) usuario.setNome(formUserDTO.getNome());
