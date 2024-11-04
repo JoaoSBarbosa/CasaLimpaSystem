@@ -1,8 +1,8 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.mappers;
 
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoForm;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -11,10 +11,10 @@ public interface WebUsuarioMapper {
 
     WebUsuarioMapper INSTANCE = Mappers.getMapper(WebUsuarioMapper.class);
 
-    Usuario toModel(UsuarioCadastroDTO form);
-    UsuarioCadastroDTO toDTO(Usuario usuario);
+    Usuario toModel(UsuarioCadastroForm form);
 
+    Usuario toModel(UsuarioEdicaoForm form);
 
-    Usuario toModelForEdit(UsuarioEdicaoDTO form);
-    UsuarioEdicaoDTO toDTOForEdit(Usuario usuario);
+    UsuarioEdicaoForm toForm(Usuario model);
+    
 }

@@ -1,8 +1,8 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
 
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.Icone;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.ServicoFormDTO;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.enums.Icone;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessage;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.ServicoForm;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.services.WebServicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,55 +18,64 @@ import javax.validation.Valid;
 public class ServicoController {
 
     @Autowired
-    WebServicoService webServicoService;
-
+    private WebServicoService service;
 
     @GetMapping
-    public ModelAndView listar() {
-        return new ModelAndView("admin/servico/lista").addObject("servicos", webServicoService.listarServicos());
+    public ModelAndView buscarTodos() {
+        var modelAndView = new ModelAndView("admin/servico/lista");
+
+        modelAndView.addObject("servicos", service.buscarTodos());
+
+        return modelAndView;
     }
 
     @GetMapping("/cadastrar")
     public ModelAndView cadastrar() {
-        return new ModelAndView("admin/servico/form").addObject("formDTO", new ServicoFormDTO());
+        var modelAndView = new ModelAndView("admin/servico/form");
+
+        modelAndView.addObject("form", new ServicoForm());
+
+        return modelAndView;
     }
 
-
     @PostMapping("/cadastrar")
-    public String cadastrarServico(
-            @Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO,
-            BindingResult bindResult,
-            RedirectAttributes attributes
-    ) {
-        if (bindResult.hasErrors()) return "admin/servico/form";
-        webServicoService.cadastrarServico(formDTO);
-        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success","Serviço cadastrado com sucesso!"));
+    public String cadastrar(@Valid @ModelAttribute("form") ServicoForm form, BindingResult result, RedirectAttributes attrs) {
+        if (result.hasErrors()) {
+            return "admin/servico/form";
+        }
+
+        service.cadastrar(form);
+        attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Serviço cadastrado com sucesso!"));
+
         return "redirect:/admin/servicos";
     }
 
     @GetMapping("/{id}/editar")
-    public ModelAndView editarServico(@PathVariable Long id) {
-        return new ModelAndView("admin/servico/form").addObject("formDTO", webServicoService.buscarServicoPorId(id));
+    public ModelAndView editar(@PathVariable Long id) {
+        var modelAndView = new ModelAndView("admin/servico/form");
+
+        modelAndView.addObject("form", service.buscarPorId(id));
+
+        return modelAndView;
     }
 
     @PostMapping("/{id}/editar")
-    public String editarServico(@PathVariable Long id, @Valid @ModelAttribute("formDTO") ServicoFormDTO formDTO, BindingResult bindResult, RedirectAttributes attr) {
-        if (bindResult.hasErrors()) return "admin/servico/form";
+    public String editar(@PathVariable Long id, @Valid @ModelAttribute("form") ServicoForm form, BindingResult result, RedirectAttributes attrs) {
+        if (result.hasErrors()) {
+            return "admin/servico/form";
+        }
 
-        webServicoService.editarServico(formDTO, id);
-        String alert = String.format("Serviço de ID [%d] editado com sucesso!", id);
+        service.editar(form, id);
+        attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Serviço editado com sucesso!"));
 
-        attr.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));
         return "redirect:/admin/servicos";
     }
 
     @GetMapping("/{id}/excluir")
-    public String excluirServico(@PathVariable Long id, RedirectAttributes attributes) {
-        webServicoService.excluirPorId(id);
+    public String excluir(@PathVariable Long id, RedirectAttributes attrs) {
+        service.excluirPorId(id);
+        attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Serviço excluído com sucesso!"));
 
-        String alert = String.format("Serviço de ID [%d] excluído com sucesso!", id);
-
-        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-warning", alert));
         return "redirect:/admin/servicos";
     }
 
@@ -74,4 +83,5 @@ public class ServicoController {
     public Icone[] getIcones() {
         return Icone.values();
     }
+    
 }

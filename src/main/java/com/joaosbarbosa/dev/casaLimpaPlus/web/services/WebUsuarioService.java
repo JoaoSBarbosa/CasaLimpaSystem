@@ -1,151 +1,135 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.services;
 
-import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.EmailConflitoException;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
+
+import com.joaosbarbosa.dev.casaLimpaPlus.core.enums.TipoUsuario;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhaIncorretaException;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasNaoConferemException;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.UsuarioJaCadastradoException;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.UsuarioNaoEncontradoException;
 import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.repository.UsuarioRepository;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.controllers.UsuarioController;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioFormDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebUsuarioMapperImpl;
+import com.joaosbarbosa.dev.casaLimpaPlus.core.repositories.UsuarioRepository;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.AlterarSenhaForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.interfaces.IConfirmacaoSenha;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.mappers.WebUsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.FieldError;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WebUsuarioService {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository repository;
+
     @Autowired
-    WebUsuarioMapperImpl mapper;
+    private WebUsuarioMapper mapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @Transactional(readOnly = true)
-    public Usuario findById(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Não foi localizado registro de usuario com o id informado: " + id));
+    public List<Usuario> buscarTodos() {
+        return repository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public UsuarioEdicaoDTO buscarUsuarioEdicaoDTO(Long id) {
-        return mapper.toDTOForEdit(findById(id));
-    }
+    public Usuario cadastrar(UsuarioCadastroForm form) {
+        validarConfirmacaoSenha(form);
 
-    @Transactional(readOnly = true)
-    public List<UsuarioFormDTO> findAll() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        List<UsuarioFormDTO> usuarioFormDTOS = new ArrayList<>();
-        for (Usuario usuario : usuarios) {
-            usuarioFormDTOS.add(new UsuarioFormDTO(usuario));
-        }
-        return usuarioFormDTOS;
-    }
+        var model = mapper.toModel(form);
 
+        var senhaHash = passwordEncoder.encode(model.getSenha());
 
-    @Transactional
-    public Usuario cadastraUsuario(UsuarioCadastroDTO formUserDTO) {
-
-        validarSenhas(formUserDTO);
-
-
-        var model = mapper.toModel(formUserDTO);
-        validarEmail( model );
-
+        model.setSenha(senhaHash);
         model.setTipoUsuario(TipoUsuario.ADMIN);
-        return usuarioRepository.save(model);
+
+        validarCamposUnicos(model);
+
+        return repository.save(model);
     }
 
+    public Usuario buscarPorId(Long id) {
+        var mensagem = String.format("Usuário com ID %d não encontrado", id);
 
-    @Transactional
-    public Usuario editarUsuario(UsuarioEdicaoDTO formDto, Long id) {
-        var usuario = findById(id);
+        return repository.findById(id)
+            .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
+    }
 
-        var model = mapper.toModelForEdit(formDto);
+    public Usuario buscarPorEmail(String email) {
+        var mensagem = String.format("Usuário com email %s não encontrado", email);
 
-        model.setId(id);
-        model.setTipoUsuario(usuario.getTipoUsuario());
+        return repository.findByEmail(email)
+            .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
+    }
+
+    public UsuarioEdicaoForm buscarFormPorId(Long id) {
+        var usuario = buscarPorId(id);
+
+        return mapper.toForm(usuario);
+    }
+
+    public Usuario editar(UsuarioEdicaoForm form, Long id) {
+        var usuario = buscarPorId(id);
+
+        var model = mapper.toModel(form);
+        model.setId(usuario.getId());
         model.setSenha(usuario.getSenha());
+        model.setTipoUsuario(usuario.getTipoUsuario());
 
-        validarEmail( model );
+        validarCamposUnicos(model);
 
-
-        return usuarioRepository.save(model);
-
+        return repository.save(model);
     }
 
-    @Transactional
-    public void excluirUsuario(Long id) {
-        var model = findById(id);
-        usuarioRepository.delete(model);
+    public void excluirPorId(Long id) {
+        var usuario = buscarPorId(id);
+
+        repository.delete(usuario);
     }
 
+    public void alterarSenha(AlterarSenhaForm form, String email) {
+        var usuario = buscarPorEmail(email);
 
+        validarConfirmacaoSenha(form);
 
+        var senhaAtual = usuario.getSenha();
+        var senhaAntiga = form.getSenhaAntiga();
+        var senha = form.getSenha();
 
+        if (!passwordEncoder.matches(senhaAntiga, senhaAtual)) {
+            var mensagem = "A senha antiga está incorreta";
+            var fieldError = new FieldError(form.getClass().getName(), "senhaAntiga", senhaAntiga, false, null, null, mensagem);
 
-    private void validarSenhas(UsuarioCadastroDTO formUserDTO) {
-        if (formUserDTO.getSenha() != null && formUserDTO.getConfirmaSenha() != null) {
-            if (!formUserDTO.getSenha().equals(formUserDTO.getConfirmaSenha())) {
-                String mensagemErro = "As senhas não coincidem.";
-                FieldError erroCampo = new FieldError(
-                        formUserDTO.getClass().getName(),
-                        "confirmaSenha",
-                        formUserDTO.getConfirmaSenha(),
-                        false,
-                        null,
-                        null,
-                        mensagemErro
-                );
-                throw new SenhasDiferemException(erroCampo, mensagemErro);
-            }
+            throw new SenhaIncorretaException(mensagem, fieldError);
+        }
+
+        var novaSenhaHash = passwordEncoder.encode(senha);
+        usuario.setSenha(novaSenhaHash);
+        repository.save(usuario);
+    }
+
+    private void validarConfirmacaoSenha(IConfirmacaoSenha obj) {
+        var senha = obj.getSenha();
+        var confirmacaoSenha = obj.getConfirmacaoSenha();
+
+        if (!senha.equals(confirmacaoSenha)) {
+            var mensagem = "Os dois campos de senha não conferem";
+            var fieldError = new FieldError(obj.getClass().getName(), "confirmacaoSenha", obj.getConfirmacaoSenha(), false, null, null, mensagem);
+
+            throw new SenhasNaoConferemException(mensagem, fieldError);
         }
     }
 
-    private void validarEmail(Usuario entity){
-        if ( entity.getEmail() != null){
-            if(usuarioRepository.existsByEmailAndId(entity.getEmail(), entity.getId())){
-                gerarExcecaoEmailEmUso(entity);
-            }
+    private void validarCamposUnicos(Usuario usuario) {
+        if (repository.isEmailJaCadastrado(usuario.getEmail(), usuario.getId())) {
+            var mensagem = "Já existe um usuário cadastrado com esse e-mail";
+            var fieldError = new FieldError(usuario.getClass().getName(), "email", usuario.getEmail(), false, null, null, mensagem);
+
+            throw new UsuarioJaCadastradoException(mensagem, fieldError);
         }
     }
-
-//    private void validarEmail(Usuario enity, boolean isEdit){
-//        if ( enity.getEmail() != null){
-//            usuarioRepository.findByEmail(enity.getEmail()).ifPresent((usuarioExistente)->{
-//                // Caso seja uma edição, verificar se o e-mail pertence a outro usuário
-//                if (!isEdit || !usuarioExistente.getId().equals(enity.getId())){
-//                    gerarExcecaoEmailEmUso(usuarioExistente);
-//                }
-//            });
-//        }
-//    }
-    // Método auxiliar para lançar a exceção de e-mail já em uso
-    private void gerarExcecaoEmailEmUso(Usuario entity) {
-        String mensagemErro = "O e-mail já está em uso.";
-        FieldError erroCampo = new FieldError(
-                Usuario.class.getName(),
-                "email",
-                entity.getEmail(),
-                false,
-                null,
-                null,
-                mensagemErro
-        );
-        throw new EmailConflitoException(erroCampo, mensagemErro);
-    }
-    private void convertDtoToModel(UsuarioFormDTO formUserDTO, Usuario usuario) {
-        if (formUserDTO.getId() != null) usuario.setId(formUserDTO.getId());
-        if (formUserDTO.getNome() != null) usuario.setNome(formUserDTO.getNome());
-        if (formUserDTO.getEmail() != null) usuario.setEmail(formUserDTO.getEmail());
-        if (formUserDTO.getSenha() != null) usuario.setSenha(formUserDTO.getSenha());
-        if (formUserDTO.getSobrenome() != null) usuario.setSobrenome(formUserDTO.getSobrenome());
-        if (formUserDTO.getTipoUsuario() != null) usuario.setTipoUsuario(formUserDTO.getTipoUsuario());
-    }
+    
 }

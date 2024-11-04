@@ -2,67 +2,67 @@
 <html lang="pt-br" th:fragment="layout (title, content, styles, scripts)">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><th:block th:include="${title}"> Dashboard </th:block> </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><th:block th:include="${title}"> Dashboard </th:block> </title>
 
 
-    <!-- Exemplo direto de CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <!-- Exemplo direto de CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/fontawesome-free/css/all.min.css}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet"
-          th:href="@{/webjars/AdminLTE/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
-    <!-- iCheck -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
-    <!-- JQVMap -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/jqvmap/jqvmap.min.css}">
-    <!-- Theme style -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/dist/css/adminlte.min.css}">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/daterangepicker/daterangepicker.css}">
-    <!-- summernote -->
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/summernote/summernote-bs4.min.css}">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/fontawesome-free/css/all.min.css}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet"
+        th:href="@{/webjars/AdminLTE/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+  <!-- iCheck -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/jqvmap/jqvmap.min.css}">
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/dist/css/adminlte.min.css}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/daterangepicker/daterangepicker.css}">
+  <!-- summernote -->
+  <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/summernote/summernote-bs4.min.css}">
 
-    <th:block th:replace="${styles}"></th:block>
+  <th:block th:replace="${styles}"></th:block>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
 
 <div class="wrapper">
 
-    <!-- A tag 'nav' será substituida pelo conteudo do fragmento nav, definido no arquivo fragments/_navbar.html-->
-    <nav th:replace="~{fragments/_navbar :: nav}"></nav>
-    <!-- A tag 'aside' será substituida pelo conteudo do fragmento aside, definido no arquivo fragments/_aside.html-->
-    <aside th:replace="~{fragments/_aside :: aside}"></aside>
+  <!-- A tag 'nav' será substituida pelo conteudo do fragmento nav, definido no arquivo fragments/_navbar.html-->
+  <nav th:replace="~{fragments/_navbar :: nav}"></nav>
+  <!-- A tag 'aside' será substituida pelo conteudo do fragmento aside, definido no arquivo fragments/_aside.html-->
+  <aside th:replace="~{fragments/_aside :: aside}"></aside>
 
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Main content -->
-        <section class="content">
-            <div th:if="${alert != null}" class="alert alert-dismissible fade show "
-                 th:classappend="${alert.cssStyleClass}" role="alert">
-                <span th:text="${alert.message}"></span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="container-fluid pt-3" th:include="${content}"></div>
-        </section>
-        <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content">
+      <div th:if="${alert != null}" class="alert alert-dismissible fade show "
+           th:classappend="${alert.cssStyleClass}" role="alert">
+        <span th:text="${alert.message}"></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="container-fluid pt-3" th:include="${content}"></div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
-    <footer th:replace="~{fragments/_footer :: footer}"></footer>
+  <footer th:replace="~{fragments/_footer :: footer}"></footer>
 </div>
 <!-- ./wrapper -->
 
@@ -72,7 +72,7 @@
 <script th:src="@{/webjars/AdminLTE/plugins/jquery-ui/jquery-ui.min.js}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
-    $.widget.bridge('uibutton', $.ui.button)
+  $.widget.bridge('uibutton', $.ui.button)
 </script>
 <!-- Bootstrap 4 -->
 <script th:src="@{/webjars/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>

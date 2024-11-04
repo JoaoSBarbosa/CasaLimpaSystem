@@ -1,11 +1,11 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.controllers;
 
-import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.EmailConflitoException;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.SenhasDiferemException;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessageDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroDTO;
-import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoDTO;
+
+import com.joaosbarbosa.dev.casaLimpaPlus.core.exceptions.ValidacaoException;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.AlterarSenhaForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.FlashMessage;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioCadastroForm;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.dto.UsuarioEdicaoForm;
 import com.joaosbarbosa.dev.casaLimpaPlus.web.services.WebUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,60 +15,47 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin/usuarios")
 public class UsuarioController {
 
     @Autowired
-    WebUsuarioService usuarioService;
-    @Autowired
-    private WebUsuarioService webUsuarioService;
+    private WebUsuarioService service;
 
     @GetMapping
-    public ModelAndView listarUsuarios() {
-        return new ModelAndView("/admin/usuario/lista").addObject("usuarios", usuarioService.findAll());
+    public ModelAndView buscarTodos() {
+        var modelAndView = new ModelAndView("admin/usuario/lista");
+
+        modelAndView.addObject("usuarios", service.buscarTodos());
+
+        return modelAndView;
     }
 
     @GetMapping("/cadastrar")
-    public ModelAndView cadastroUsuario() {
-        return new ModelAndView("/admin/usuario/cadastro-form").addObject("formUserDTO", new UsuarioCadastroDTO());
+    public ModelAndView cadastrar() {
+        var modelAndView = new ModelAndView("admin/usuario/cadastro-form");
+
+        modelAndView.addObject("cadastroForm", new UsuarioCadastroForm());
+
+        return modelAndView;
     }
 
-//    @PostMapping("/cadastrar")
-//    public String cadastrarUsuario(
-//            @Valid @ModelAttribute("formUserDTO") UsuarioCadastroDTO formUserDTO,
-//            BindingResult result,
-//            RedirectAttributes attributes
-//    ) {
-//        if (result.hasErrors()) return "admin/usuario/cadastro-form";
-//
-//        try {
-//            webUsuarioService.cadastraUsuario(formUserDTO);
-//            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuario cadastrado com sucesso!"));
-//        } catch (SenhasDiferemException e) {
-//            result.addError(e.getFieldError());
-//            return "admin/usuario/cadastro-form";
-//
-//        }catch (EmailConflitoException e){
-//            result.addError(e.getFieldError());
-//            return "admin/usuario/cadastro-form";
-//        }
-//        return "redirect:/admin/usuarios";
-//    }
-
     @PostMapping("/cadastrar")
-    public String cadastrarUsuario(
-            @Valid @ModelAttribute("formUserDTO") UsuarioCadastroDTO formUserDTO,
-            BindingResult result,
-            RedirectAttributes attributes
+    public String cadastrar(
+        @Valid @ModelAttribute("cadastroForm") UsuarioCadastroForm cadastroForm,
+        BindingResult result,
+        RedirectAttributes attrs
     ) {
-        if (result.hasErrors()) return "admin/usuario/cadastro-form";
+        if (result.hasErrors()) {
+            return "admin/usuario/cadastro-form";
+        }
 
         try {
-            webUsuarioService.cadastraUsuario(formUserDTO);
-            attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-success", "Usuário cadastrado com sucesso!"));
-        } catch (SenhasDiferemException | EmailConflitoException e) {
+            service.cadastrar(cadastroForm);
+            attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Usuário cadastrado com sucesso!"));
+        } catch (ValidacaoException e) {
             result.addError(e.getFieldError());
             return "admin/usuario/cadastro-form";
         }
@@ -77,37 +64,73 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/editar")
-    public ModelAndView editarUsuario(@PathVariable Long id) {
-        return new ModelAndView("admin/usuario/edicao-form").addObject("edicaoForm", webUsuarioService.buscarUsuarioEdicaoDTO(id));
+    public ModelAndView editar(@PathVariable Long id) {
+        var modelAndView = new ModelAndView("admin/usuario/edicao-form");
+
+        modelAndView.addObject("edicaoForm", service.buscarFormPorId(id));
+
+        return modelAndView;
     }
 
     @PostMapping("/{id}/editar")
-    public String editarUsuario(@PathVariable Long id, @Valid @ModelAttribute("edicaoForm") UsuarioEdicaoDTO edicaoForm, BindingResult result, RedirectAttributes attributes) {
-        if (result.hasErrors()) return "/admin/usuario/edicao-form";
+    public String editar(
+        @PathVariable Long id,
+        @Valid @ModelAttribute("edicaoForm") UsuarioEdicaoForm edicaoForm,
+        BindingResult result,
+        RedirectAttributes attrs
+    ) {
+        if  (result.hasErrors()) {
+            return "admin/usuario/edicao-form";
+        }
 
-       try {
-           webUsuarioService.editarUsuario(edicaoForm, id);
-           String alert = String.format("Usuário com ID [%d] editado com sucesso!", id);
-           attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-info", alert));
-       }catch (EmailConflitoException e) {
-           result.addError(e.getFieldError());
-           return "admin/usuario/edicao-form";
-       }
+        try {
+            service.editar(edicaoForm, id);
+            attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Usuário editado com sucesso!"));
+        } catch (ValidacaoException e) {
+            result.addError(e.getFieldError());
+            return "admin/usuario/edicao-form";
+        }
+
         return "redirect:/admin/usuarios";
     }
-
 
     @GetMapping("/{id}/excluir")
-    public String deletarUsuario(@PathVariable Long id, RedirectAttributes attributes) {
-        webUsuarioService.excluirUsuario(id);
-        String alert = String.format("Usuário com ID [%d] excluído com sucesso!", id);
-        attributes.addFlashAttribute("alert", new FlashMessageDTO("alert-warning", alert));
+    public String excluir(@PathVariable Long id, RedirectAttributes attrs) {
+        service.excluirPorId(id);
+        attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Usuário excluído com sucesso!"));
+
         return "redirect:/admin/usuarios";
     }
 
+    @GetMapping("/alterar-senha")
+    public ModelAndView alterarSenha() {
+        var modelAndView = new ModelAndView("admin/usuario/alterar-senha");
 
-    @ModelAttribute("tiposUsuario")
-    public TipoUsuario[] getTipoUsuario() {
-        return TipoUsuario.values();
+        modelAndView.addObject("alterarSenhaForm", new AlterarSenhaForm());
+
+        return modelAndView;
     }
+
+    @PostMapping("/alterar-senha")
+    public String alterarSenha(
+        @Valid @ModelAttribute("alterarSenhaForm") AlterarSenhaForm alterarSenhaForm,
+        BindingResult result,
+        RedirectAttributes atts,
+        Principal principal
+    ) {
+        if (result.hasErrors()) {
+            return "admin/usuario/alterar-senha";
+        }
+
+        try {
+            service.alterarSenha(alterarSenhaForm, principal.getName());
+            atts.addFlashAttribute("alert", new FlashMessage("alert-success", "Senha alterada com sucesso!"));
+        } catch (ValidacaoException e) {
+            result.addError(e.getFieldError());
+            return "admin/usuario/alterar-senha";
+        }
+
+        return "redirect:/admin/usuarios/alterar-senha";
+    }
+    
 }

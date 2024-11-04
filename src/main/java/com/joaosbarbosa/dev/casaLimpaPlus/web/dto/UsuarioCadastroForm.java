@@ -1,6 +1,6 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.web.dto;
 
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.Usuario;
+import com.joaosbarbosa.dev.casaLimpaPlus.web.interfaces.IConfirmacaoSenha;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,29 +10,28 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class UsuarioEdicaoDTO {
-
-    private Long id;
+public class UsuarioCadastroForm implements IConfirmacaoSenha {
 
     @NotNull
-    @NotEmpty
-    @Size(min = 3, max = 50)
-    private String nome;
-    @Size(min = 0, max = 100)
-    private String sobrenome;
-    @Email
-    @NotNull
-    @NotEmpty
     @Size(min = 3, max = 255)
+    private String nome;
+    @Size(min = 3, max = 255)
+    private String sobrenome;
+
+    @NotNull
+    @Size(min = 3, max = 255)
+    @Email
     private String email;
 
-    public UsuarioEdicaoDTO(Usuario usuario) {
-        this.id = usuario.getId();
-        this.nome = usuario.getNome();
-        this.sobrenome = usuario.getSobrenome();
-        this.email = usuario.getEmail();
-    }
+    @NotNull
+    @NotEmpty
+    private String senha;
+
+    @NotNull
+    @NotEmpty
+    private String confirmacaoSenha;
+    
 }

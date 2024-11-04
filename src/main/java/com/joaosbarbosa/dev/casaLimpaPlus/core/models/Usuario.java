@@ -1,30 +1,36 @@
 package com.joaosbarbosa.dev.casaLimpaPlus.core.models;
-import com.joaosbarbosa.dev.casaLimpaPlus.core.models.enums.TipoUsuario;
+
+import com.joaosbarbosa.dev.casaLimpaPlus.core.enums.TipoUsuario;
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "tb_usuario")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString( onlyExplicitlyIncluded = true )
+@ToString(onlyExplicitlyIncluded = true)
 public class Usuario {
 
-    @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    @ToString.Include
     @EqualsAndHashCode.Include
+    @ToString.Include
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column( nullable = false)
+
+    @Column(nullable = false)
     private String nome;
     private String sobrenome;
-    @Column(unique = true, nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column( nullable = false)
+
+    @Column(nullable = false)
     private String senha;
-    @Column( name = "tipo_usuario", nullable = false, length = 8)
+
+    @Column(name = "tipo_usuario", length = 8, nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
+    
 }

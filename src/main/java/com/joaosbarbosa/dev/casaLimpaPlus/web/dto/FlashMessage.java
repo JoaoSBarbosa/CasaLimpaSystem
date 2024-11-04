@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class FlashMessageDTO {
-
+public class FlashMessage {
+    
     private String cssStyleClass;
+
     private String message;
 
 }

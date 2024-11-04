@@ -1,89 +1,89 @@
 <!-- Main Sidebar Container -->
 <aside th:fragment="aside" class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="" class="brand-link">
-        <!--    <img src="https://placekitten.com/200/200" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">-->
-        <img src="/img/logo_casa_limpa.png" alt="Casa Limpa Logo" class="brand-image img-circle elevation-3" >
-        <span class="brand-text font-weight-light">Casa Limpa+</span>
-    </a>
+  <!-- Brand Logo -->
+  <a href="" class="brand-link">
+    <!--    <img src="https://placekitten.com/200/200" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">-->
+    <img src="/img/logo.png" alt="Casa Limpa Logo" class="brand-image img-circle elevation-3" >
+    <span class="brand-text font-weight-light">Casa Limpa+</span>
+  </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-<!--                <img src="https://placekitten.com/128/128" class="img-circle elevation-2" alt="User Image">-->
-<!--                <img src="/img/user.jpg" class="img-circle elevation-2" alt="Imagem do Usuario">-->
-                <img src="/img/user.jpg" class="rounded-circle border" style="width: 30px; height: 30px; object-fit: cover;" alt="Imagem do Usuario">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <!--                <img src="https://placekitten.com/128/128" class="img-circle elevation-2" alt="User Image">-->
+        <!--                <img src="/img/user.jpg" class="img-circle elevation-2" alt="Imagem do Usuario">-->
+        <img src="/img/user.jpg" class="rounded-circle border" style="width: 30px; height: 30px; object-fit: cover;" alt="Imagem do Usuario">
 
-            </div>
-            <div class="info">
-                <a href="#" class="d-block">user@mail.com</a>
-            </div>
-        </div>
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-<!--                        <i class="nav-icon fas fa-broom"></i>-->
-                        <i class="nav-icon fas fa-broom"></i>
-                        <p>
-                            Serviços
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin/servicos/cadastrar}">
-<!--                                <i class="nav-icon fas fa-pencil nav-icon"></i>-->
-                                <i class="nav-icon fas fa-plus-square"></i>
-                                <p>Cadastrar</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin/servicos}">
-<!--                                <i class="fas fa-list nav-icon"></i>-->
-                                <i class="nav-icon fas fa-th-list"></i>
-                                <p>Listar</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-<!--                        <i class="nav-icon fas fa-user-check"></i>-->
-<!--                        <i class="nav-icon fas fa-user-friendsk"></i>-->
-                        <i class="nav-icon fas fa-user-friends"></i>
-
-                        <p>
-                            Usuarios
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin/usuarios/cadastrar}">
-                                <i class="nav-icon fas fa-plus-square"></i>
-                                <p>Cadastrar</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin/usuarios}">
-                                <i class="nav-icon fas fa-th-list"></i>
-                                <p>Listar</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- /.sidebar-menu -->
+      </div>
+      <div class="info">
+        <a href="#" class="d-block">user@mail.com</a>
+      </div>
     </div>
-    <!-- /.sidebar -->
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <!--                        <i class="nav-icon fas fa-broom"></i>-->
+            <i class="nav-icon fas fa-broom"></i>
+            <p>
+              Serviços
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/servicos/cadastrar}">
+                <!--                                <i class="nav-icon fas fa-pencil nav-icon"></i>-->
+                <i class="nav-icon fas fa-plus-square"></i>
+                <p>Cadastrar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/servicos}">
+                <!--                                <i class="fas fa-list nav-icon"></i>-->
+                <i class="nav-icon fas fa-th-list"></i>
+                <p>Listar</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <!--                        <i class="nav-icon fas fa-user-check"></i>-->
+            <!--                        <i class="nav-icon fas fa-user-friendsk"></i>-->
+            <i class="nav-icon fas fa-user-friends"></i>
+
+            <p>
+              Usuarios
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/usuarios/cadastrar}">
+                <i class="nav-icon fas fa-plus-square"></i>
+                <p>Cadastrar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/usuarios}">
+                <i class="nav-icon fas fa-th-list"></i>
+                <p>Listar</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
 </aside>
