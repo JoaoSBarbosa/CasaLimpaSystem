@@ -56,7 +56,7 @@ public class WebUsuarioService {
 
 
         var model = mapper.toModel(formUserDTO);
-        validarEmail(model, false );
+        validarEmail( model );
 
         model.setTipoUsuario(TipoUsuario.ADMIN);
         return usuarioRepository.save(model);
@@ -73,7 +73,7 @@ public class WebUsuarioService {
         model.setTipoUsuario(usuario.getTipoUsuario());
         model.setSenha(usuario.getSenha());
 
-        validarEmail(model, true );
+        validarEmail( model );
 
 
         return usuarioRepository.save(model);
@@ -107,16 +107,25 @@ public class WebUsuarioService {
             }
         }
     }
-    private void validarEmail(Usuario enity, boolean isEdit){
-        if ( enity.getEmail() != null){
-            usuarioRepository.findByEmail(enity.getEmail()).ifPresent((usuarioExistente)->{
-                // Caso seja uma edição, verificar se o e-mail pertence a outro usuário
-                if (!isEdit || !usuarioExistente.getId().equals(enity.getId())){
-                    gerarExcecaoEmailEmUso(usuarioExistente);
-                }
-            });
+
+    private void validarEmail(Usuario entity){
+        if ( entity.getEmail() != null){
+            if(usuarioRepository.existsByEmailAndId(entity.getEmail(), entity.getId())){
+                gerarExcecaoEmailEmUso(entity);
+            }
         }
     }
+
+//    private void validarEmail(Usuario enity, boolean isEdit){
+//        if ( enity.getEmail() != null){
+//            usuarioRepository.findByEmail(enity.getEmail()).ifPresent((usuarioExistente)->{
+//                // Caso seja uma edição, verificar se o e-mail pertence a outro usuário
+//                if (!isEdit || !usuarioExistente.getId().equals(enity.getId())){
+//                    gerarExcecaoEmailEmUso(usuarioExistente);
+//                }
+//            });
+//        }
+//    }
     // Método auxiliar para lançar a exceção de e-mail já em uso
     private void gerarExcecaoEmailEmUso(Usuario entity) {
         String mensagemErro = "O e-mail já está em uso.";
