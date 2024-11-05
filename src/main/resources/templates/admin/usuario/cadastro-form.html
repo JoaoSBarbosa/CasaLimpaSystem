@@ -10,6 +10,10 @@
         <div class="card card-primary">
           <div class="card-header">
             <div class="card-title">Cadastro de Usuário</div>
+
+            <div class="card-tools">
+              <a th:href="@{/admin/usuarios}" class="btn btn-sm btn-dark">Lista de Usuários</a>
+            </div>
           </div>
           <div class="card-body">
             <form method="POST" th:object="${cadastroForm}">

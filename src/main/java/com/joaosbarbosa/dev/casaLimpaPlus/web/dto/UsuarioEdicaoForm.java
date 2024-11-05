@@ -16,7 +16,7 @@ public class UsuarioEdicaoForm {
     @NotNull
     @Size(min = 3, max = 255)
     private String nome;
-    @Size(min = 3, max = 255)
+    @Size(min = 0, max = 255)
     private String sobrenome;
     @NotNull
     @Size(min = 3, max = 255)
