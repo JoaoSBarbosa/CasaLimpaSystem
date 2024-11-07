@@ -31,15 +31,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/admin/**").hasAnyAuthority(TipoUsuario.ADMIN.toString())
-                .anyRequest().authenticated()
-                .and()
-                .formLogin();
+                .anyRequest().authenticated();
 
-        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout", "GET"))
+        http.formLogin()
+                .loginPage("/admin/login")
+                .usernameParameter("email")
+                .passwordParameter("senha")
+                .defaultSuccessUrl("/admin/servicos")
+                .permitAll();
+
+        http.logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout", "GET"));
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webjar/**");
+        web.ignoring().antMatchers("/webjars/**");
     }
 }

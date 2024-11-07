@@ -1,0 +1,196 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="pt-br">-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--    <title>Casa Limpa + | Log in</title>-->
+<!--    &lt;!&ndash; Tell the browser to be responsive to screen width &ndash;&gt;-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+
+<!--    &lt;!&ndash; Font Awesome &ndash;&gt;-->
+<!--    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/fontawesome-free/css/all.min.css}">-->
+<!--    &lt;!&ndash; Ionicons &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">-->
+<!--    &lt;!&ndash; icheck bootstrap &ndash;&gt;-->
+<!--    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">-->
+<!--    &lt;!&ndash; Theme style &ndash;&gt;-->
+<!--    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/dist/css/adminlte.min.css}">-->
+<!--    &lt;!&ndash; Google Font: Source Sans Pro &ndash;&gt;-->
+<!--    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">-->
+<!--</head>-->
+<!--<body class="hold-transition login-page">-->
+<!--<div class="login-box">-->
+<!--    <div class="login-logo">-->
+<!--        Casa Limpa +-->
+<!--    </div>-->
+<!--    &lt;!&ndash; /.login-logo &ndash;&gt;-->
+<!--    <div class="card">-->
+<!--        <div class="card-body login-card-body">-->
+<!--            <p class="login-box-msg">Entre com suas credenciais para iniciar a seção</p>-->
+
+<!--            <div class="alert alert-danger" th:if="${param.error != null}">-->
+<!--                <span th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></span>-->
+<!--            </div>-->
+<!--            <form method="POST" th:action="@{/admin/login}">-->
+<!--                <div class="input-group mb-3">-->
+
+<!--                    <input type="text" class="form-control" placeholder="E-mail" name="email" required>-->
+<!--                    <div class="input-group-append">-->
+<!--                        <div class="input-group-text">-->
+<!--                            <span class="fas fa-user"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="input-group mb-3">-->
+<!--                    <input type="password" class="form-control" placeholder="Senha" name="senha" required>-->
+<!--                    <div class="input-group-append">-->
+<!--                        <div class="input-group-text">-->
+<!--                            <span class="fas fa-lock"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                    <div class="col-8">-->
+<!--                        <div class="icheck-primary">-->
+<!--                            <input type="checkbox" id="remember-me" name="remember-me">-->
+<!--                            <label for="remember-me">Lembrar-me</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="col-4">-->
+<!--                        <button type="submit" class="btn btn-primary btn-block">Login</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; /.login-card-body &ndash;&gt;-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; /.login-box &ndash;&gt;-->
+
+<!--&lt;!&ndash; jQuery &ndash;&gt;-->
+<!--<script th:src="@{/webjars/AdminLTE/plugins/jquery/jquery.min.js}"></script>-->
+<!--&lt;!&ndash; Bootstrap 4 &ndash;&gt;-->
+<!--<script th:src="@{/webjars/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE App &ndash;&gt;-->
+<!--<script th:src="@{/webjars/AdminLTE/dist/js/adminlte.min.js}"></script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Casa Limpa + | Login</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/dist/css/adminlte.min.css}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #fff;
+        }
+        .customBox {
+            background-color: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            /*overflow: hidden;*/
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background-color: #2575fc;
+            color: #fff;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div class="login-box customBox">
+    <div class="login-logo">
+        Casa Limpa +
+    </div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Entre com suas credenciais para iniciar a seção</p>
+
+            <div class="alert alert-danger" th:if="${param.error != null}">
+                <span th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></span>
+            </div>
+
+            <form method="POST" th:action="@{/admin/login}">
+                <div class="input-group mb-3">
+
+                    <input type="text" class="form-control" placeholder="E-mail" name="email" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input type="checkbox" id="remember-me" name="remember-me">
+                            <label for="remember-me">Lembrar-me</label>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/webjars/AdminLTE/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/webjars/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/webjars/AdminLTE/dist/js/adminlte.min.js}"></script>
+</body>
+</html>
