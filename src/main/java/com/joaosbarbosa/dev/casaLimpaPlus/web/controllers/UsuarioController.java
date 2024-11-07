@@ -104,11 +104,7 @@ public class UsuarioController {
 
     @GetMapping("/alterar-senha")
     public ModelAndView alterarSenha() {
-        var modelAndView = new ModelAndView("admin/usuario/alterar-senha");
-
-        modelAndView.addObject("alterarSenhaForm", new AlterarSenhaForm());
-
-        return modelAndView;
+        return new ModelAndView("admin/usuario/alterar-senha").addObject("alterarSenhaForm", new AlterarSenhaForm());
     }
 
     @PostMapping("/alterar-senha")
@@ -118,9 +114,7 @@ public class UsuarioController {
         RedirectAttributes atts,
         Principal principal
     ) {
-        if (result.hasErrors()) {
-            return "admin/usuario/alterar-senha";
-        }
+        if (result.hasErrors()) return "admin/usuario/alterar-senha";
 
         try {
             service.alterarSenha(alterarSenhaForm, principal.getName());

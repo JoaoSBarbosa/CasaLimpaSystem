@@ -97,6 +97,7 @@ public class WebUsuarioService {
 
         var senhaAtual = usuario.getSenha();
         var senhaAntiga = form.getSenhaAntiga();
+
         var senha = form.getSenha();
 
         if (!passwordEncoder.matches(senhaAntiga, senhaAtual)) {
