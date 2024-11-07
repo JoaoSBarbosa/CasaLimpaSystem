@@ -2,7 +2,10 @@ package com.joaosbarbosa.dev.casaLimpaPlus.config;
 
 import com.joaosbarbosa.dev.casaLimpaPlus.core.enums.TipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,10 +18,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userService;
-    @Autowired
-    private PasswordEncoder encoder;
+    @Value("${com.joaosbarbosa.casaLimpaPlus.remeberMe.Key}")
+    private String rememberKey;
+    @Value("${com.joaosbarbosa.casaLimpaPlus.remeberMe.validitySeconds}")
+    private int rememberValiditySeconds;
+
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -27,10 +31,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder);
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/admin/**").hasAnyAuthority(TipoUsuario.ADMIN.toString())
+                .antMatchers("/admin/**").hasAuthority(TipoUsuario.ADMIN.toString())
                 .anyRequest().authenticated();
 
         http.formLogin()
@@ -42,6 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout", "GET"));
+
+        http.rememberMe()
+                .rememberMeParameter("lembrar-me")
+                .tokenValiditySeconds(rememberValiditySeconds)
+                .key(rememberKey);
+
     }
 
     @Override
